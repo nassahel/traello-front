@@ -9,8 +9,8 @@ Este proyecto es una aplicación tipo Trello con funcionalidades en tiempo real.
 ---
 ## Datos para Loguearse
 
-email: 'nassa@gmail.com', password: 'admin123'
-email: 'user@gmail.com', password: 'user123'
+- email: 'nassa@gmail.com', password: 'admin123'
+- email: 'user@gmail.com', password: 'user123'
 ---
 
 ## 📁 Estructura del Proyecto
