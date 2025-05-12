@@ -7,8 +7,6 @@ import type { ColumnInterface, TaskInterface } from "../types/types"
 import Card from "./Card"
 import { useMemo} from "react"
 
-
-
 type Props = {
   col: ColumnInterface
   deleteColumn: (id: string) => void;
@@ -36,8 +34,6 @@ const Column = ({ col, deleteColumn, createTask, tasks, deleteTask, updateTask }
     transform: CSS.Transform.toString(transform)
   }
 
-
-
   return (
     <div
       ref={setNodeRef}
@@ -59,7 +55,6 @@ const Column = ({ col, deleteColumn, createTask, tasks, deleteTask, updateTask }
             <Card key={card.id} card={card} deleteTask={deleteTask} updateTask={updateTask} />
           ))}
         </SortableContext>
-
         <button onClick={() => { createTask(col.id) }} className="bg-gray-100 p-3 cursor-pointer hover:bg-gray-200 duration-200 rounded-lg  text-gray-400 flex items-center justify-between">Add Task <FaPlus /></button>
       </div>
 

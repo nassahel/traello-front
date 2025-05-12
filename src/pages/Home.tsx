@@ -1,18 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
-import { FaPlus } from "react-icons/fa6";
 import { closestCenter, DndContext, type DragEndEvent, type DragOverEvent, type DragStartEvent } from "@dnd-kit/core";
-import Column from "../components/Column";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import type { ColumnInterface, TaskInterface } from "../types/types";
+import { FaPlus } from "react-icons/fa6";
+import Column from "../components/Column";
 import { socket } from "../websocket/socket";
+import LoginBtn from "../components/LoginBtn";
+import { jwtDecode, type JwtPayload } from "jwt-decode";
 
 const Home = () => {
   const [columns, setColumns] = useState<ColumnInterface[]>([]);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
+  const [userInfo, setUserInfo] = useState<any>(null)
   const [activeColumn, setActiveColumn] = useState<ColumnInterface | null>(null);
   const [activeTask, setActiveTask] = useState<TaskInterface | null>(null);
   const [tasks, setTasks] = useState<TaskInterface[]>([]);
-  const [loged, setLoged] = useState(true);
+
+  console.log(userInfo);
+
 
   const createNewColumn = () => {
     const columnToAdd = {
@@ -94,12 +99,11 @@ const Home = () => {
           columnId: updatedTasks[overIndex].columnId,
         };
 
-        // Emitir el movimiento de la tarea
         socket.emit("moveTask", {
           from: activeIndex,
           to: overIndex,
           taskId: activeId,
-          columnId: updatedTasks[overIndex].columnId,  // o el nuevo columnId si cambió
+          columnId: updatedTasks[overIndex].columnId,
         });
 
         return arrayMove(updatedTasks, activeIndex, overIndex);
@@ -118,12 +122,11 @@ const Home = () => {
           columnId: overId,
         };
 
-        // Emitir el movimiento de la tarea a una nueva columna
         socket.emit("moveTask", {
           from: activeIndex,
-          to: activeIndex, // No estamos reordenando la tarea dentro de la columna, solo cambiando la columna
+          to: activeIndex,
           taskId: activeId,
-          columnId: overId,  // El nuevo columnId
+          columnId: overId,
         });
 
         return arrayMove(updatedTasks, activeIndex, activeIndex);
@@ -132,15 +135,19 @@ const Home = () => {
   };
 
   const createTask = (columnId: string) => {
-    const newTask: TaskInterface = {
-      id: generateId(),
-      columnId,
-      content: `Task ${tasks.length + 1}`,
-    };
+    if (userInfo !== null) {
+      const newTask: TaskInterface = {
+        id: generateId(),
+        columnId,
+        content: `Task ${tasks.length + 1}`,
+        userId: userInfo.id
+      };
 
-    setTasks([...tasks, newTask]);
+      setTasks([...tasks, newTask]);
 
-    socket.emit("createTask", newTask);
+      socket.emit("createTask", newTask);
+    }
+
   };
 
   const deleteTask = (id: string) => {
@@ -159,6 +166,23 @@ const Home = () => {
   };
 
   useEffect(() => {
+
+    const checkToken = () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const decoded = jwtDecode<JwtPayload>(token);
+        setUserInfo(decoded);
+      } catch (err) {
+        console.error("Token inválido:", err);
+        setUserInfo(null);
+      }
+    };
+
+    checkToken();
+
+
     socket.on("columnMoved", (data) => {
       console.log("Columna movida desde otro cliente", data);
       setColumns((columns) => {
@@ -170,8 +194,6 @@ const Home = () => {
 
     socket.on("columnCreated", (newCol) => {
       console.log("Columna creada desde otro cliente", newCol);
-
-      // Solo agregar la columna si no existe
       setColumns((columns) => {
         if (!columns.find((col) => col.id === newCol.id)) {
           return [...columns, newCol];
@@ -180,44 +202,25 @@ const Home = () => {
       });
     });
 
-    return () => {
-      socket.off("columnMoved");
-      socket.off("columnCreated");
-    };
-  }, []);
-
-
-  useEffect(() => {
     socket.on("taskMoved", (data) => {
       console.log("Tarea movida desde otro cliente:", data);
-
       setTasks((prevTasks) => {
         const { taskId, columnId, from, to } = data;
-
         const taskIndex = prevTasks.findIndex((t) => t.id === taskId);
         if (taskIndex === -1) return prevTasks;
-
         const updatedTasks = [...prevTasks];
-
-        // Actualizamos el columnId si cambió
         updatedTasks[taskIndex] = {
           ...updatedTasks[taskIndex],
           columnId,
         };
 
-        // Filtramos las tareas de la columna destino (para reordenar correctamente)
         const columnTasks = updatedTasks
           .filter((t) => t.columnId === columnId)
           .sort((a, b) => prevTasks.indexOf(a) - prevTasks.indexOf(b));
-
         const currentIndex = columnTasks.findIndex((t) => t.id === taskId);
-
         const reordered = arrayMove(columnTasks, currentIndex, to);
-
-        // Reconstruimos la lista general con las tareas actualizadas de esa columna
         let finalTasks: typeof updatedTasks = [];
         let reorderIndex = 0;
-
         for (let task of updatedTasks) {
           if (task.columnId !== columnId) {
             finalTasks.push(task);
@@ -225,60 +228,38 @@ const Home = () => {
             finalTasks.push(reordered[reorderIndex++]);
           }
         }
-
         return finalTasks;
       });
     });
 
-    return () => {
-      socket.off("taskMoved");
-    };
-  }, []);
-
-
-
-
-  useEffect(() => {
     socket.on("taskCreated", (task) => {
       console.log("Tarea creada desde otro cliente", task);
-
-      // Verifica si la tarea ya existe en el estado
       setTasks((tasks) => {
         if (tasks.some(t => t.id === task.id)) {
           console.log("Tarea ya existe, no se duplica.");
-          return tasks;  // Si la tarea ya existe, no la añadimos
+          return tasks;
         }
-
-        return [...tasks, task];  // Si no existe, agregamos la nueva tarea
+        return [...tasks, task];
       });
     });
 
-    return () => {
-      socket.off("taskCreated");
-    };
-  }, []);
-
-  useEffect(() => {
     socket.on("taskDeleted", (taskId) => {
       setTasks((tasks) => tasks.filter((task) => task.id !== taskId));
     });
 
-    return () => {
-      socket.off("taskDeleted");
-    };
-  }, []);
-
-
-  useEffect(() => {
     socket.on("columnDeleted", (columnId) => {
       setColumns((columns) => columns.filter((col) => col.id !== columnId));
     });
 
     return () => {
+      socket.off("columnMoved");
+      socket.off("columnCreated");
+      socket.off("taskMoved");
+      socket.off("taskCreated");
+      socket.off("taskDeleted");
       socket.off("columnDeleted");
     };
   }, []);
-
 
 
   return (
@@ -287,11 +268,7 @@ const Home = () => {
         <h1 className="text-2xl font-bold">
           Tr<span className="text-yellow-300">a</span>ello
         </h1>
-        {loged ? (
-          <button onClick={() => setLoged(false)}>Logout</button>
-        ) : (
-          <button onClick={() => setLoged(true)}>Login</button>
-        )}
+        <LoginBtn />
       </nav>
 
       <main className="flex-1 flex overflow-x-auto p-6 min-h-0">

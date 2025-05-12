@@ -1,54 +1,137 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🧠 Proyecto tipo Traello con NestJS (Backend) + React (Frontend)
 
-Currently, two official plugins are available:
+Este proyecto es una aplicación tipo Trello con funcionalidades en tiempo real. Utiliza:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- ⚙️ **Backend:** NestJS + MongoDB + WebSockets (Socket.IO)
+- 💻 **Frontend:** React + DnD Kit + Axios + Socket.IO Client
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📁 Estructura del Proyecto
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+/frontend   → Aplicación React (cliente)
+/backend    → API NestJS + WebSockets (servidor)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Requisitos previos
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+Asegurate de tener instalado:
+
+- Node.js >= 18
+- npm >= 9 (o yarn)
+
+---
+
+## 🔧 Instalación
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/tu-usuario/tu-repo-backend backend
+git clone https://github.com/tu-usuario/tu-repo-frontend frontend
 ```
+
+### 2. Instalar dependencias
+
+#### Backend
+
+```bash
+cd backend
+npm install
+```
+
+#### Frontend
+
+```bash
+cd ../frontend
+npm install
+```
+
+---
+
+## ⚙️ Configuración
+
+### Backend
+
+No se necesita archivos .env
+
+### Frontend
+
+Modificar la URL del backend si es necesario en tus llamadas con Axios (`http://localhost:3000`).
+
+---
+
+## ▶️ Ejecución
+
+### Backend
+
+```bash
+cd backend
+npm run start:dev
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:5173` (o el puerto configurado por Vite).
+
+---
+
+## 🔐 Autenticación
+
+- Los usuarios están definidos en un array del backend.
+- Para iniciar sesión, usar el componente `LoginBtn`.
+- Se genera un JWT que se guarda en `localStorage`.
+- El frontend muestra el nombre de usuario usando el email.
+
+---
+
+## ♻️ Funcionalidades
+
+- ✅ Login y logout con token JWT
+- ✅ Crear, mover y eliminar tareas
+- ✅ Crear, mover y eliminar columnas
+- ✅ Drag and drop fluido
+- ✅ Sincronización en tiempo real con Socket.IO
+
+---
+
+## 📦 Tecnologías utilizadas
+
+### Backend
+
+- NestJS
+- Mongoose
+- Socket.IO
+- JWT
+
+### Frontend
+
+- React + Vite
+- @dnd-kit
+- Axios
+- Socket.IO Client
+- TailwindCSS
+- React Icons
+
+---
+
+## ✍️ Autor
+
+Hecho por Nassahel Elias ✨
+
+---
+
+## 🧪 Importante!!!!
+
+Ciertas fncionalidades no se realizaron por falta de tiempo. Considerar que fue hcho en 1 solo dia.
+
+

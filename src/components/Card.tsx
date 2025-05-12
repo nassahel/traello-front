@@ -5,17 +5,11 @@ import type { TaskInterface } from "../types/types"
 import { BiSolidTrashAlt } from "react-icons/bi"
 import { useState } from "react"
 
-
-
-
 type Props = {
   card: TaskInterface
   deleteTask: (id: string) => void
   updateTask: (id: string, content: string) => void
 }
-
-
-
 
 const Card = ({ card, deleteTask, updateTask }: Props) => {
   const [editMode, setEditMode] = useState(false)
@@ -37,8 +31,6 @@ const Card = ({ card, deleteTask, updateTask }: Props) => {
     transform: CSS.Transform.toString(transform)
   }
 
- 
-
   return (
     <div
       style={style}
@@ -55,7 +47,6 @@ const Card = ({ card, deleteTask, updateTask }: Props) => {
             {card.content}
           </div>
       }
-
     </div>
   )
 }
