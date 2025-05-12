@@ -31,8 +31,8 @@ Asegurate de tener instalado:
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/tu-repo-backend backend
-git clone https://github.com/tu-usuario/tu-repo-frontend frontend
+git clone https://github.com/nassahel/traello-front
+git clone https://github.com/nassahel/traello-back
 ```
 
 ### 2. Instalar dependencias
@@ -40,14 +40,14 @@ git clone https://github.com/tu-usuario/tu-repo-frontend frontend
 #### Backend
 
 ```bash
-cd backend
+cd traello-front
 npm install
 ```
 
 #### Frontend
 
 ```bash
-cd ../frontend
+cd traello-back
 npm install
 ```
 
