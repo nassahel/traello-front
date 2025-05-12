@@ -8,5 +8,5 @@ export interface TaskInterface {
   id: string;
   columnId: string;
   content: string
-  userId: number
+  userEmail: string
 }

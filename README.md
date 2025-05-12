@@ -7,6 +7,11 @@ Este proyecto es una aplicación tipo Trello con funcionalidades en tiempo real.
 - 💻 **Frontend:** React + DnD Kit + Axios + Socket.IO Client
 
 ---
+## Datos para Loguearse
+
+email: 'nassa@gmail.com', password: 'admin123'
+email: 'user@gmail.com', password: 'user123'
+---
 
 ## 📁 Estructura del Proyecto
 

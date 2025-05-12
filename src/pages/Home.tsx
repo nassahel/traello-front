@@ -140,7 +140,7 @@ const Home = () => {
         id: generateId(),
         columnId,
         content: `Task ${tasks.length + 1}`,
-        userId: userInfo.id
+        userEmail: userInfo.email
       };
 
       setTasks([...tasks, newTask]);
@@ -271,32 +271,40 @@ const Home = () => {
         <LoginBtn />
       </nav>
 
-      <main className="flex-1 flex overflow-x-auto p-6 min-h-0">
-        <DndContext collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver}>
-          <div className="flex gap-6 w-max h-full">
-            <SortableContext items={columnsId}>
-              {columns.map((col: ColumnInterface) => (
-                <Column
-                  key={col.id}
-                  col={col}
-                  deleteColumn={deleteColumn}
-                  createTask={createTask}
-                  tasks={tasks.filter((task) => task.columnId === col.id)}
-                  deleteTask={deleteTask}
-                  updateTask={updateTask}
-                />
-              ))}
-            </SortableContext>
-            <button
-              onClick={createNewColumn}
-              className="w-72 bg-white rounded-xl shadow-md p-4 cursor-pointer flex text-xl font-semibold text-gray-400 items-center justify-between h-fit gap-4"
-            >
-              <h2>New Column</h2>
-              <FaPlus />
-            </button>
-          </div>
-        </DndContext>
-      </main>
+      {
+        userInfo === null ? <main className="flex-1 flex overflow-x-auto items-center justify-center p-6 min-h-0">
+          <p className="text-4xl italic text-semibold text-neutral-600">Debes estar logueado para ver el tablero!</p>
+        </main>
+          :
+          <main className="flex-1 flex overflow-x-auto p-6 min-h-0">
+            <DndContext collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver}>
+              <div className="flex gap-6 w-max h-full">
+                <SortableContext items={columnsId}>
+                  {columns.map((col: ColumnInterface) => (
+                    <Column
+                      key={col.id}
+                      col={col}
+                      deleteColumn={deleteColumn}
+                      createTask={createTask}
+                      tasks={tasks.filter((task) => task.columnId === col.id)}
+                      deleteTask={deleteTask}
+                      updateTask={updateTask}
+                    />
+                  ))}
+                </SortableContext>
+                <button
+                  onClick={createNewColumn}
+                  className="w-72 bg-white rounded-xl shadow-md p-4 cursor-pointer flex text-xl font-semibold text-gray-400 items-center justify-between h-fit gap-4"
+                >
+                  <h2>New Column</h2>
+                  <FaPlus />
+                </button>
+              </div>
+            </DndContext>
+          </main>
+      }
+
+
     </div>
   );
 };

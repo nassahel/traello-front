@@ -36,6 +36,7 @@ const LoginBtn = () => {
       setUser(username);
       setLoged(true);
       setError("");
+      window.location.reload();
     } catch (err) {
       console.error(err);
       setError("Usuario o contraseña incorrectos");
@@ -49,6 +50,7 @@ const LoginBtn = () => {
     setEmail("");
     setPassword("");
     setUser("");
+    window.location.reload();
   };
 
   return (

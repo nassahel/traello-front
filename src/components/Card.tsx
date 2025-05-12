@@ -13,6 +13,7 @@ type Props = {
 
 const Card = ({ card, deleteTask, updateTask }: Props) => {
   const [editMode, setEditMode] = useState(false)
+  
 
   const toggleEditMode = () => {
     setEditMode((prev) => !prev)
@@ -38,6 +39,7 @@ const Card = ({ card, deleteTask, updateTask }: Props) => {
       className="bg-gray-200 rounded-lg shadow-sm text-gray-800 flex items-center flex-col overflow-hidden z-20 relative">
       <div className="me-2 text-lg flex items-center justify-between p-2 w-full">
         <button {...attributes} {...listeners} className="cursor-pointer"><PiDotsNineBold /></button>
+        <p className="text-xs italic">{card.userEmail}</p>
         <button className="cursor-pointer" onClick={() => deleteTask(card.id)}><BiSolidTrashAlt /></button>
       </div>
       {
